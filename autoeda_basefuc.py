@@ -53,7 +53,7 @@ class autoeda_module_analysis(object):
             if param_line is not None:
                 self.params_dict[param_line.group(1)] = \
                     self._verilog_str2int(param_line.group(2))
-                print(param_line.groups(), head_row)
+                # print(param_line.groups(), head_row)
         return self.params_dict
 
     def bfuc_get_ports(self, force_refresh=False):

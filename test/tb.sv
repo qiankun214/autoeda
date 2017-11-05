@@ -15,13 +15,13 @@ logic [SPI_MAX_WIDTH_LOG - 1:0]spi_width;
 spi_config #(
 	.SPI_MAX_WIDTH_LOG(SPI_MAX_WIDTH_LOG)
 ) dut (
-	.clk(clk),
-	.rst_n(rst_n),
-	.config_req(config_req),
+	.clk        (clk),
+	.rst_n      (rst_n),
+	.config_req (config_req),
 	.config_data(config_data),
-	.cpol(cpol),
-	.cpha(cpha),
-	.spi_width(spi_width)
+	.cpol       (cpol),
+	.cpha       (cpha),
+	.spi_width  (spi_width)
 );
 
 string dump_file;

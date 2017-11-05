@@ -1,7 +1,7 @@
-from autoeda_basefuc import autoeda_module_analysis
+from autoeda_template import autoeda_component_template_generator
 
 
-class autoeda_testbench_generator(autoeda_module_analysis):
+class autoeda_testbench_generator(autoeda_component_template_generator):
     """docstring for autoeda_testbench_generator"""
 
     def __init__(self):
@@ -78,41 +78,6 @@ class autoeda_testbench_generator(autoeda_module_analysis):
                     "%s %s%s;" % (
                         type_def, port["width_source"], port["name"]))
         return "\n".join(var_def_list)
-
-    def tb_module_instances(self, modult_info=None, indent=""):
-        if modult_info is None:
-            module_name, params_dict, port_list = \
-                self.module_name, self.params_dict, self.port_list
-        else:
-            module_name, params_dict, port_list = modult_info
-        if len(params_dict) == 0:
-            module_content = ["%s%s dut (" % (module_name, indent)]
-        else:
-            module_content = ["%s%s #(" % (module_name, indent)]
-            module_content.append(self.tb_param_instances(
-                params_dict, indent=indent + "\t"))
-            module_content.append("%s) dut (" % indent)
-        module_content.append(self.tb_port_instances(
-            port_list, indent="\t" + indent))
-        module_content.append("%s);" % indent)
-        return "\n".join(module_content)
-
-    def tb_param_instances(self, params_dict=None, indent="\t"):
-        if params_dict is None:
-            params_dict = self.params_dict
-        param_list = []
-        for param in params_dict:
-            param_list.append("%s.%s(%s)," % (indent, param, param))
-        return "\n".join(param_list)[:-1]
-
-    def tb_port_instances(self, port_list=None, indent="\t"):
-        if port_list is None:
-            port_list = self.port_list
-        port_instance_list = []
-        for port in port_list:
-            port_instance_list.append("%s.%s(%s)," % (
-                indent, port["name"], port["name"]))
-        return "\n".join(port_instance_list)[:-1]
 
     def _clock_gen(self):
         return "\n".join([
