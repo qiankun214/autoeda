@@ -92,7 +92,7 @@ class autoeda_testbench_generator(autoeda_component_template_generator):
         return "\n".join([
             "initial begin",
             "\trst_n = 1'b1;",
-            "\t#5 rst_n = 1'b0",
+            "\t#5 rst_n = 1'b0;",
             "\t#10 rst_n = 1'b1;",
             "end"])
 
