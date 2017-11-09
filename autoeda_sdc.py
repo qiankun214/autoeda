@@ -96,7 +96,7 @@ class autoeda_sdc_template_generator(autoeda_module_analysis):
     def _gen_port_sdc(self, sdc_list, port_str, min_len=0,
                       sdc_type="input", mode="max"):
         input_max = list(sdc_list)
-        print(sdc_list)
+        # print(sdc_list)
         if sdc_type == "output":
             input_max[0] = "set_output_delay"
         if mode == "min":
