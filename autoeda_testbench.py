@@ -115,4 +115,4 @@ class autoeda_testbench_generator(autoeda_component_template_generator):
 
 if __name__ == '__main__':
     test = autoeda_testbench_generator()
-    test("./spi_config.v", fsdb=True, vcd=True)
+    test("./test/spi_config.v", fsdb=True, vcd=True)

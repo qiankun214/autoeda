@@ -1,7 +1,7 @@
-from autoeda_basefuc import autoeda_module_analysis
+from autoeda_basefuc import autoeda_file_handle, autoeda_base_analysis
 
 
-class autoeda_sdc_template_generator(autoeda_module_analysis):
+class autoeda_sdc_template_generator(autoeda_file_handle, autoeda_base_analysis):
     """docstring for autoeda_sdc_template_generator"""
 
     def __init__(self):

@@ -1,7 +1,7 @@
 import sys
 import getopt
 from autoeda_utils import generate_template_option, package_template_option
-from autoeda_basefuc import autoeda_module_analysis
+from autoeda_module_analysis import autoeda_module_analysis
 from autoeda_template import autoeda_component_template_generator
 from autoeda_testbench import autoeda_testbench_generator
 from autoeda_sdc import autoeda_sdc_template_generator

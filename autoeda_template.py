@@ -1,7 +1,8 @@
-from autoeda_basefuc import autoeda_module_analysis
+from autoeda_basefuc import autoeda_file_handle, autoeda_base_analysis
 
 
-class autoeda_component_template_generator(autoeda_module_analysis):
+class autoeda_component_template_generator(autoeda_file_handle,
+                                           autoeda_base_analysis):
     """docstring for autoeda_component_template_generator"""
 
     def __init__(self):
@@ -80,5 +81,6 @@ class autoeda_component_template_generator(autoeda_module_analysis):
 
 if __name__ == '__main__':
     test = autoeda_component_template_generator()
-    test_dict = {"config": "./spi_config.v", "config_2": "./spi_config.v"}
+    test_dict = {"config": "./test/spi_config.v",
+                 "config_2": "./test/spi_config.v"}
     test(test_dict, port_connection_mode=lambda x: "<connection %s>" % x)
