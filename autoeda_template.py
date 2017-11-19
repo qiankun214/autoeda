@@ -12,6 +12,7 @@ class autoeda_component_template_generator(autoeda_file_handle,
                  port_connection_mode=None, param_connection_mode=None,):
         template_content = []
         for key in source_path_dict:
+            self.__init__()
             self.bfuc_read_file(source_path_dict[key])
             self.bfuc_get_module_name()
             self.bfuc_get_ports()
