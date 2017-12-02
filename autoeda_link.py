@@ -61,19 +61,18 @@ class autoeda_component_link(autoeda_component_template_generator):
 
     def get_wire_dict(self, num):
         for port in self.port_list:
-            if port["name"] not in self.ignore_signal_tuple:
-                if "input" in port["type"]:
-                    for i in range(num):
-                        self.input_signal_dict[self._port_signal_gen(i)(
-                            port["name"])] = port["width_source"]
-                elif "output" in port["type"]:
-                    for i in range(num):
-                        self.output_signal_dict[self._port_signal_gen(i)(
-                            port["name"])] = port["width_source"]
-                else:
-                    for i in range(num):
-                        self.inout_signal_dict[self._port_signal_gen(i)(
-                            port["name"])] = port["width_source"]
+            if "input" in port["type"]:
+                for i in range(num):
+                    self.input_signal_dict[self._port_signal_gen(i)(
+                        port["name"])] = port["width_source"]
+            elif "output" in port["type"]:
+                for i in range(num):
+                    self.output_signal_dict[self._port_signal_gen(i)(
+                        port["name"])] = port["width_source"]
+            else:
+                for i in range(num):
+                    self.inout_signal_dict[self._port_signal_gen(i)(
+                        port["name"])] = port["width_source"]
 
     def _collect_param(self):
         for param in self.params_dict:
@@ -102,12 +101,16 @@ class autoeda_component_link(autoeda_component_template_generator):
                 wire_define_list.append(
                     self._assign_wire(key, connection_signal, signal_type))
                 self._delete_wire(key)
-        self._delete_connected_signal(connected_signal_list)
+        wire_define_list.append(self._handle_ignore_signal())
+        self._delete_connected_signal(
+            connected_signal_list + list(self.ignore_signal_tuple))
         return "\n".join(wire_define_list)
 
     def _is_connection_inside(self, signal_name):
         connection_name = self._get_connection_name(signal_name)
-        if self.output_signal_dict.get(connection_name) is not None:
+        if connection_name in self.ignore_signal_tuple:
+            return None, None
+        elif self.output_signal_dict.get(connection_name) is not None:
             return connection_name, "output"
         elif self.inout_signal_dict.get(connection_name) is not None:
             return connection_name, "inout"
@@ -142,6 +145,20 @@ class autoeda_component_link(autoeda_component_template_generator):
             return self.connection_dict[signal_name]
         else:
             return signal_name
+
+    def _handle_ignore_signal(self):
+        ignore_signal_define = []
+        for signal in self.ignore_signal_tuple:
+            print("ignore signal:", signal)
+            if self.input_signal_dict.get(signal) is not None:
+                ignore_signal_define.append("error:ignore input signal")
+                ignore_signal_define.append(self._define_wire(signal, "input"))
+            elif self.output_signal_dict.get(signal) is not None:
+                ignore_signal_define.append(
+                    self._define_wire(signal, "output"))
+            elif self.inout_signal_dict.get(signal) is not None:
+                ignore_signal_define.append(self._define_wire(signal, "inout"))
+        return "\n".join(ignore_signal_define)
 
     def _delete_connected_signal(self, connected_signal_list):
         for signal in connected_signal_list:
@@ -183,13 +200,14 @@ class autoeda_component_link(autoeda_component_template_generator):
         return ",\n".join(port_define_list)
 if __name__ == '__main__':
     test = autoeda_component_link()
-    test_dict = {"uart": {"path": "../src/uart_interface.v", "num": 1},
-                 "pro": {"path": "../src/test_pro.v", "num": 1},
-                 "regs_group": {"path": "../src/regs_group.v", "num": 1},
-                 "ram": {"path": "../src/pkg_simple_ram.v", "num": 1}
+    test_dict = {"controller": {"path": "../src/processor_controller.v", "num": 1},
+                 "datapath": {"path": "../src/dataflow.v", "num": 1}
                  }
+    ignore_signal_tuple = (
+        "send_busy",
+    )
     extra_signal_tuple = (
-        "order"
+        # "order"
     )
     connection_dict = {
         "send_data": "regs_read_data1",
@@ -201,8 +219,9 @@ if __name__ == '__main__':
     test(
         test_dict,
         module_name="dataflow",
-        target_path="../src/dataflow.v",
+        target_path="../src/top.v",
+        ignore_signal_tuple=ignore_signal_tuple,
         extra_signal_tuple=extra_signal_tuple,
         connection_dict=connection_dict)
-    print(test.input_signal_dict)
-    print(test.output_signal_dict)
+    # print(test.input_signal_dict)
+    # print(test.output_signal_dict)
