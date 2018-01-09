@@ -120,7 +120,7 @@ class autoeda_component_link(autoeda_component_template_generator):
         else:
             return None, None
 
-    def _define_wire(self, port_name, signal_type, connected_signal_list):
+    def _define_wire(self, port_name, signal_type, connected_signal_list=()):
         if port_name not in self.extra_signal_tuple and \
                 port_name not in connected_signal_list:
             if signal_type == "output":
@@ -136,7 +136,7 @@ class autoeda_component_link(autoeda_component_template_generator):
             return "// needn'd to define %s" % port_name
 
     def _assign_wire(self, signal_name1, signal_name2, signal_type,
-                     connected_signal_list):
+                     connected_signal_list=()):
         return "\n".join([
             "\n// need to connect %s with %s" % (signal_name1, signal_name2),
             self._define_wire(signal_name1, "input", connected_signal_list),
@@ -209,16 +209,20 @@ class autoeda_component_link(autoeda_component_template_generator):
         return ",\n".join(port_define_list)
 if __name__ == '__main__':
     test = autoeda_component_link()
-    test_dict = {"uart": {"path": "../src/uart_interface.v", "num": 1},
-                 "ram": {"path": "../src/pkg_simple_ram.v", "num": 1},
-                 "pro": {"path": "../src/test_pro.v", "num": 1},
-                 "regs_group": {"path": "../src/regs_group.v", "num": 1}
-                 }
+    # test_dict = {"uart": {"path": "../src/uart_interface.v", "num": 1},
+    #              "ram": {"path": "../src/pkg_simple_ram.v", "num": 1},
+    #              "pro": {"path": "../src/test_pro.v", "num": 1},
+    #              "regs_group": {"path": "../src/regs_group.v", "num": 1}
+    #              }
+    test_dict = {
+        "dataflow": {"path": "../src/dataflow.v", "num": 1},
+        "controller": {"path": "../src/processor_controller.v", "num": 1}
+    }
     ignore_signal_tuple = (
-        # "send_busy",
+        "send_busy",
     )
     extra_signal_tuple = (
-        "order",
+        # "order",
     )
     connection_dict = {
         "send_data": "regs_read_data1",
@@ -229,8 +233,8 @@ if __name__ == '__main__':
     }
     test(
         test_dict,
-        module_name="dataflow",
-        target_path="../src/dataflow.v",
+        module_name="top",
+        target_path="../src/top.v",
         ignore_signal_tuple=ignore_signal_tuple,
         extra_signal_tuple=extra_signal_tuple,
         connection_dict=connection_dict)
